@@ -1,0 +1,12 @@
+mysql  : 
+->create database info; 
+-> use info;
+
+create table player(
+scores int(11),
+name  char(10),
+password char(10)
+);
+
+
+//注意，连接mysql 要 配置环境 ，需要去网上找教程
