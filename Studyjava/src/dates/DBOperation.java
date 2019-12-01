@@ -1,5 +1,7 @@
 package dates;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.sql.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -7,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.*;
+import Chat.*;
 public class DBOperation{
 	private MyDBConnection myDB=null;
 	private Connection conn=null;
@@ -16,15 +20,111 @@ public class DBOperation{
 	private int number2=0;
 	private String name;
 	private String password;
+	PreparedStatement pstmt=null;
 	public DBOperation(MyDBConnection myDB){
 		conn=myDB.getMyConnection();//取得对象
 		stmt=myDB.getMyStatement();//取得sql语句
+	}
+	
+	public  boolean findName(String s) {
+		try {
+			pstmt = conn.prepareStatement("select * from player where name =?");
+			pstmt.setString(1, s);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String name = rs.getString("name");
+				String password = rs.getString( "password");
+				//System.out.println(name+"  "+password);
+				return true;
+			}
+			return false;
+			
+		}
+		catch(SQLException e) {
+			e.printStackTrace( );
+		}
+		return false;
+		
+	}
+	public void createGroupChat(int port,String password ,String groupowner,String groupname) {
+		//PreparedStatement pstmt = conn.prepareStatement("insert into groupChat values(?,?,?,?); " );
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("insert into groupChat values(?,?,?,?); " );
+			pstmt.setInt( 1, port);
+			pstmt.setString( 2, password);
+			pstmt.setString( 3, groupowner);
+			pstmt.setString(4, groupname);
+			if(findGroup(port)) {
+				System.out.print("创建群失败，群已经创建过");
+				return ;
+			}
+			pstmt.execute( );
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+
+	public ArrayList<group> loadGroup(){
+		ArrayList<group> gro= new ArrayList<group>();
+		try {
+			String sql = "select port,password,groupowner,groupname from groupChat;";
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next( )) {
+				int por = rs.getInt("port");
+				String paw = rs.getString("password");
+				String gon = rs.getString("groupowner");
+				String gna = rs.getString( "groupname");
+				//group x = new group(por,paw,gon,gna);
+				gro.add(new group(por,paw,gon,gna));
+			}
+			return gro;
+		}
+		catch(Exception e) {
+			e.printStackTrace( );
+		}
+		return gro;
+	}
+	public  boolean findGroup(int port) {
+		try {
+			pstmt = conn.prepareStatement( "select * from groupChat where port = ?");
+			pstmt.setInt(1,port);
+			ResultSet rs = pstmt.executeQuery( );
+			if(rs.next()) {
+				return true;
+			}
+			return false;
+		}
+		catch(Exception e) {
+			e.printStackTrace( );
+		}
+		return false;
+	}
+	public boolean deleteGroup(int port) {
+		try {
+			pstmt = conn.prepareStatement( "delete from groupChat where port = ?");
+			pstmt.setInt( 1, port);
+			pstmt.execute( );
+			return true;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	public void insertData(String name,String password,int scores){
 		try{
 			String newType1=new String(name.getBytes(),"GBK");//字节转码
 			String newType2=new String(password.getBytes(),"GBK");
 			String sql="INSERT INTO player(scores,name,password)VALUES("+scores+",'"+newType1+"','"+newType2+"')";
+			//System.out.println( sql);
+			if(this.findName(name)) {
+					System.out.println("用户名已被占用");
+					return ;
+			}
 			stmt.executeUpdate(sql);//更新语句
 		}catch(Exception e1){
 			e1.printStackTrace();
@@ -102,4 +202,22 @@ public class DBOperation{
 	public void setNumber2(){
 		number2=0;
 	}
+	/*
+	public static void main(String [] args) {
+		MyDBConnection my=new MyDBConnection();
+		DBOperation myopr = new DBOperation(my);
+		
+		//myopr.showtable("ktj");
+		System.out.println(myopr.findGroup( 2222));
+		myopr.deleteGroup( 2222);
+		System.out.println(myopr.findGroup( 2222));
+		myopr.createGroupChat(2222,"1234","aaa","bbb");
+		System.out.println(myopr.findGroup( 2222));
+		ArrayList<group> gro = myopr.loadGroup( );
+		for(int i=0;i<gro.size( );i++) {
+			System.out.println(gro.get(i ));
+		}
+		//myopr.showtable("");
+		my.closeMyConnection( );
+	}*/
 }

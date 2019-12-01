@@ -1,0 +1,16 @@
+use info;
+create table groupChat(
+port    int(11),
+password  char(20),
+groupowner   char(20),
+groupname   char(20) ,
+primary key(port)
+);
+
+insert into groupChat  values(1234,'abc','kkk','chat');
+
+功能函数：
+public boolean deleteGroup(int port);
+public void insertData(String name,String password,int scores);
+public  boolean findGroup(int port);
+public ArrayList<group> loadGroup();
