@@ -5,14 +5,16 @@ public class group {
 	String password;
 	String groupowner;
 	String groupname;
-	public group(int por,String paw,String gon,String gna){
+	String question=null;
+	public group(int por,String paw,String gon,String gna,String que){
 		port = por;
 		password = paw;
 		groupowner = gon;
 		groupname = gna;
+		question =que;
 		
 	}
 	public String toString() {
-			return port+"  "+password +"  "+groupowner+"  "+groupname;
+			return port+"  "+password +"  "+groupowner+"  "+groupname+"  "+question;
 		}
 }

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.*;
 import Chat.*;
+import Chat.group;
 public class DBOperation{
 	private MyDBConnection myDB=null;
 	private Connection conn=null;
@@ -25,35 +25,34 @@ public class DBOperation{
 		conn=myDB.getMyConnection();//取得对象
 		stmt=myDB.getMyStatement();//取得sql语句
 	}
-	
-	public  boolean findName(String s) {
+	/*
+	public static void findName(String s) {
 		try {
-			pstmt = conn.prepareStatement("select * from player where name =?");
+			PreparedStatement pstmt = conn.prepareStatement("select * from player where name =?");
 			pstmt.setString(1, s);
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
 				String name = rs.getString("name");
 				String password = rs.getString( "password");
-				//System.out.println(name+"  "+password);
-				return true;
+				System.out.println(name+"  "+password);
 			}
-			return false;
 			
 		}
 		catch(SQLException e) {
 			e.printStackTrace( );
 		}
-		return false;
 		
-	}
-	public void createGroupChat(int port,String password ,String groupowner,String groupname) {
+		
+	}*/
+	public void createGroupChat(int port,String password ,String groupowner,String groupname,String question) {
 		//PreparedStatement pstmt = conn.prepareStatement("insert into groupChat values(?,?,?,?); " );
 		try {
-			PreparedStatement pstmt = conn.prepareStatement("insert into groupChat values(?,?,?,?); " );
+			PreparedStatement pstmt = conn.prepareStatement("insert into groupChat values(?,?,?,?,?); " );
 			pstmt.setInt( 1, port);
 			pstmt.setString( 2, password);
 			pstmt.setString( 3, groupowner);
 			pstmt.setString(4, groupname);
+			pstmt.setString(5,question);
 			if(findGroup(port)) {
 				System.out.print("创建群失败，群已经创建过");
 				return ;
@@ -71,15 +70,17 @@ public class DBOperation{
 	public ArrayList<group> loadGroup(){
 		ArrayList<group> gro= new ArrayList<group>();
 		try {
-			String sql = "select port,password,groupowner,groupname from groupChat;";
+			String sql = "select port,password,groupowner,groupname ,question from groupChat;";
 			ResultSet rs = stmt.executeQuery(sql);
 			while(rs.next( )) {
 				int por = rs.getInt("port");
 				String paw = rs.getString("password");
 				String gon = rs.getString("groupowner");
 				String gna = rs.getString( "groupname");
-				//group x = new group(por,paw,gon,gna);
-				gro.add(new group(por,paw,gon,gna));
+				String que = rs.getString("question");
+				//group g = new group(por,paw,gon,gna,que);
+				gro.add(new group(por,paw,gon,gna,que));
+				//group(int por,String paw,String gon,String gna,String que)
 			}
 			return gro;
 		}
@@ -106,6 +107,9 @@ public class DBOperation{
 	public boolean deleteGroup(int port) {
 		try {
 			pstmt = conn.prepareStatement( "delete from groupChat where port = ?");
+			if(this.findGroup( port)) {
+				System.out.println("无端口号");
+			}
 			pstmt.setInt( 1, port);
 			pstmt.execute( );
 			return true;
@@ -115,16 +119,35 @@ public class DBOperation{
 		}
 		return false;
 	}
+	public ArrayList<group> findGroupName(String name) {
+		ArrayList<group> gro = new ArrayList<group>();
+		try {
+			pstmt = conn.prepareStatement("select * from groupChat where groupname like ?");
+			name = '%'+name +'%';
+			System.out.println(name);
+			pstmt.setString( 1, name);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next( )) {
+				int por = rs.getInt("port");
+				String paw = rs.getString("password");
+				String gon = rs.getString("groupowner");
+				String gna = rs.getString( "groupname");
+				String que = rs.getString("question");
+				gro.add(new group(por,paw,gon,gna,que));
+			}
+			return gro;
+		}
+		catch(Exception e) {
+			e.printStackTrace( );
+		}
+		return gro;
+	}
 	public void insertData(String name,String password,int scores){
 		try{
 			String newType1=new String(name.getBytes(),"GBK");//字节转码
 			String newType2=new String(password.getBytes(),"GBK");
 			String sql="INSERT INTO player(scores,name,password)VALUES("+scores+",'"+newType1+"','"+newType2+"')";
 			//System.out.println( sql);
-			if(this.findName(name)) {
-					System.out.println("用户名已被占用");
-					return ;
-			}
 			stmt.executeUpdate(sql);//更新语句
 		}catch(Exception e1){
 			e1.printStackTrace();
@@ -211,12 +234,14 @@ public class DBOperation{
 		System.out.println(myopr.findGroup( 2222));
 		myopr.deleteGroup( 2222);
 		System.out.println(myopr.findGroup( 2222));
-		myopr.createGroupChat(2222,"1234","aaa","bbb");
+		myopr.createGroupChat(2222,"1234","aaa","bbb","1+1=?");
 		System.out.println(myopr.findGroup( 2222));
 		ArrayList<group> gro = myopr.loadGroup( );
+		gro = myopr.findGroupName("a");
 		for(int i=0;i<gro.size( );i++) {
 			System.out.println(gro.get(i ));
 		}
+		
 		//myopr.showtable("");
 		my.closeMyConnection( );
 	}*/

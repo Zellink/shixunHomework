@@ -1,16 +1,21 @@
 use info;
+drop table groupChat;
 create table groupChat(
 port    int(11),
 password  char(20),
 groupowner   char(20),
 groupname   char(20) ,
+question     char(20),
 primary key(port)
 );
 
-insert into groupChat  values(1234,'abc','kkk','chat');
+insert into groupChat  values(1234,'abc','kkk','chat','1+1=?');
 
 功能函数：
-public boolean deleteGroup(int port);
-public void insertData(String name,String password,int scores);
+public boolean deleteGroup(int port);   
+public void createGroupChat(int port,String password ,String groupowner,String groupname,String question);
+//建群
 public  boolean findGroup(int port);
+//
 public ArrayList<group> loadGroup();
+public ArrayList<group> findGroupName(String name) ； //根据子串name  按照群名称 查询
