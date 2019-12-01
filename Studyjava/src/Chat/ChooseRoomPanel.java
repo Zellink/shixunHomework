@@ -7,18 +7,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollBar;
-import java.awt.ScrollPane;
 import java.awt.Toolkit;
 
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-import javax.swing.AbstractListModel;
-import javax.swing.border.LineBorder;
-
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
 
 public class ChooseRoomPanel {
@@ -34,7 +30,7 @@ public class ChooseRoomPanel {
 	public ChooseRoomPanel() {
 		jframe = new JFrame();
 		jframe.setTitle("聊天室选择");
-		jframe.setSize(511, 365);
+		jframe.setSize(512, 396);
 		jframe.setIconImage(Toolkit.getDefaultToolkit().createImage(Server.class.getResource("qq.png")));
 		southPanel = new JPanel(new BorderLayout());
 		northPanel = new JPanel();
@@ -62,8 +58,14 @@ public class ChooseRoomPanel {
 		JButton findButton = new JButton("查询聊天室");
 		southPanel.add(findButton, "South");
 		
-		JButton refreshButton = new JButton("创建聊天室");
-		southPanel.add(refreshButton);
+		JButton createButton = new JButton("创建聊天室");
+		createButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jframe.setEnabled(false);
+				new CreateRoomPanel(jframe);
+			}
+		});
+		southPanel.add(createButton);
 		jframe.getContentPane().add(southPanel, BorderLayout.SOUTH);
 		jframe.getContentPane().add(northPanel, BorderLayout.NORTH);
 		
@@ -77,6 +79,13 @@ public class ChooseRoomPanel {
 		JList<String> list = new JList<String>(listModel);
 		list.setBorder(null);
 		centerPanel.setViewportView(list);
+		
+		jframe.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);// 退出程序
+			}
+		});
+		
 		jframe.setVisible(true);
 	}
 }
