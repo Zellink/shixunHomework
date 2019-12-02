@@ -65,7 +65,7 @@ public class CreateRoomPanel  implements ActionListener {
 		pswText.setBounds(151,60,218,40);
 		panel.add(pswText);
 		
-		 textArea = new JTextArea();
+		textArea = new JTextArea();
 		textArea.setText("在此处输入聊天室的介绍  或者  问题");
 		textArea.setLineWrap(true);
 		textArea.setBounds(151, 110, 218, 80);

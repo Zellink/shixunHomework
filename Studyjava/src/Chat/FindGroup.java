@@ -4,8 +4,12 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 //import java.util.
@@ -23,6 +27,10 @@ public class FindGroup implements ActionListener {
 	private JTextField nameText;
 	JButton createButton = null;
 	private MyDBConnection myDB=new MyDBConnection();
+	DefaultListModel<String> listModel = new DefaultListModel<String>();
+
+	ArrayList<group> grp ;
+	JScrollPane centerPanel = new JScrollPane();
 	private DBOperation opr = new DBOperation(myDB);
 	public FindGroup(JFrame j) {
 		jframe = new JFrame();
@@ -32,6 +40,20 @@ public class FindGroup implements ActionListener {
 		jframe.getContentPane().setLayout(new BorderLayout(0, 0));
 		jframe.setSize(512, 396);
 		jframe.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		
+		
+
+		 centerPanel = new JScrollPane();
+		centerPanel.setBorder(new TitledBorder("查询结果聊天室"));
+		centerPanel.setPreferredSize(new Dimension(50,50));
+		centerPanel.setLocation(80,80);
+		centerPanel.setSize(300,200);
+		jframe.getContentPane().add(centerPanel);
+		 listModel = new DefaultListModel<String>();
+		 grp = opr.loadGroup( );
+		
+		
+		
 		
 		JPanel panel = new JPanel();
 		jframe.getContentPane().add(panel, BorderLayout.CENTER);
@@ -47,8 +69,10 @@ public class FindGroup implements ActionListener {
 		nameText.setText("在此处输入查询内容   关键字查询");
 		nameText.setBounds(151, 10, 218, 40);
 		panel.add(nameText);
-		//portText.setColumns(10);
-	
+		
+		
+		
+			
 		
 		
 		
@@ -76,7 +100,16 @@ public class FindGroup implements ActionListener {
 				   System.out.println(grp.get(i ));
 			   }
 			   //
-			   
+			   for(int i=0;i<grp.size();i++) {
+				   String groupname = grp.get( i).groupname;
+					String portvlue= grp.get(i).port+"";
+					String s=String.format("群名:%-30s  账号：%-30s", groupname,portvlue);
+					listModel.addElement( s );
+				}
+				
+				JList<String> list = new JList<String>(listModel);
+				list.setBorder(null);
+				centerPanel.setViewportView(list);
 			   
 		   }
 	   }  

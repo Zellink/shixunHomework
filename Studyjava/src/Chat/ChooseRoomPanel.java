@@ -50,8 +50,13 @@ public class ChooseRoomPanel {
 			}
 		});
 		
-		JButton refreshBotton = new JButton("刷新");
-		northPanel.add(refreshBotton);
+		JButton loginoutBotton = new JButton("退出登录");
+		loginoutBotton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+						System.exit(0);// 退出程序
+			}
+		});
+		northPanel.add(loginoutBotton);
 		
 		JLabel k1 = new JLabel("");
 		northPanel.add(k1);
@@ -62,8 +67,7 @@ public class ChooseRoomPanel {
 		JLabel k2 = new JLabel("");
 		northPanel.add(k2);
 		
-		JButton loginoutBotton = new JButton("退出登录");
-		northPanel.add(loginoutBotton);
+		
 		
 		JButton findButton = new JButton("查询聊天室");
 		southPanel.add(findButton, "South");
@@ -81,6 +85,7 @@ public class ChooseRoomPanel {
 				new CreateRoomPanel(jframe);
 			}
 		});
+		 
 		southPanel.add(createButton);
 		jframe.getContentPane().add(southPanel, BorderLayout.SOUTH);
 		jframe.getContentPane().add(northPanel, BorderLayout.NORTH);
@@ -92,15 +97,39 @@ public class ChooseRoomPanel {
 		
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		
-		//listModel.addElement("聊天室1");
-		//listModel.addElement("聊天室2");
+		
 		ArrayList<group> grp = opr.loadGroup( );
 		for(int i=0;i<grp.size();i++) {
-			listModel.addElement( grp.get(i ).groupname  );
+			String groupname = grp.get( i).groupname;
 			String portvlue= grp.get(i).port+"";
-			listModel.addElement( portvlue );
+			String s=String.format("群名:%-30s  账号：%-30s", groupname,portvlue);
+			listModel.addElement( s );
+			
 			
 		}
+		
+		listModel.clear();
+		
+		 JButton refreshBotton = new JButton("刷新");
+		 
+		refreshBotton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					listModel.clear();
+					ArrayList<group> grp = opr.loadGroup( );
+					for(int i=0;i<grp.size();i++) {
+						String groupname = grp.get( i).groupname;
+						String portvlue= grp.get(i).port+"";
+						String s=String.format("群名:%-30s  账号：%-30s", groupname,portvlue);
+						listModel.addElement( s );
+						JList<String> list = new JList<String>(listModel);
+						list.setBorder(null);
+						centerPanel.setViewportView(list);
+					}
+					
+				//new 
+			}
+		});
+		northPanel.add(refreshBotton);
 		
 		JList<String> list = new JList<String>(listModel);
 		list.setBorder(null);
