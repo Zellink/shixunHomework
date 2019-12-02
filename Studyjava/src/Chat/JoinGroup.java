@@ -19,15 +19,19 @@ import java.sql.Connection;
 
 public class JoinGroup implements ActionListener {
 	private JFrame jframe;
+	private JFrame faframe;
 	private JTextField portText;
 	private JTextField pswText;
 	private JTextArea textArea ;
+	private String username;
 	//private JTextField textArea;
 	JButton createButton = null;
 	private MyDBConnection myDB=new MyDBConnection();
 	//private Connection conn= new Connection(myDB);
 	private DBOperation opr = new DBOperation(myDB);
-	public JoinGroup(JFrame j) {
+	public JoinGroup(JFrame j, String username) {
+		this.faframe = j;
+		this.username = username;
 		jframe = new JFrame();
 		jframe.setAlwaysOnTop(true);
 		jframe.setResizable(false);
@@ -89,10 +93,12 @@ public class JoinGroup implements ActionListener {
 			   System.out.println( port+" "+password+" ");
 			   int portvalue = Integer.parseInt(port);
 			   String passwordfromDB = opr.getPassword(portvalue);
+			   String groupname = opr.findGroupNameByPort(Integer.valueOf(port));
 			   System.out.println( passwordfromDB+" "+portvalue);
 			   if(passwordfromDB.contentEquals(password)) {
 				   System.out.println("启动客户端");
-				   //启动客户端
+				   jframe.setVisible(false);
+				   new Client(Integer.valueOf(port), faframe, username, groupname);
 			   }
 			   else {
 				   System.out.println( "密码错误");

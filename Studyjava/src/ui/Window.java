@@ -1,6 +1,7 @@
 package ui;
  
 import java.awt.Button;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -14,6 +15,7 @@ import javax.swing.*;
  
 import dates.DBOperation;
 import dates.MyDBConnection;
+import Chat.ChooseRoomPanel;
  
 public class Window implements MouseListener {
  
@@ -105,6 +107,7 @@ public class Window implements MouseListener {
 				txt2.setText("");
 				distinguish=4;
 				frame.setVisible(false);//登录成功则关闭界面
+				new ChooseRoomPanel(text1);             //
 		   }else{
 				JOptionPane.showMessageDialog(null, "密码错误","提示",2);
 				txt2.setText("");
@@ -122,6 +125,9 @@ public class Window implements MouseListener {
 		   String logi=(String) JOptionPane.showInputDialog(null,"请输入你的id：\n","注册",JOptionPane.PLAIN_MESSAGE,null,null,"在这输入"); 
 		   String pas=(String) JOptionPane.showInputDialog(null,"请输入你的密码：\n","注册",JOptionPane.PLAIN_MESSAGE,null,null,"在这输入");
 			myOpr.insertData(logi,pas,0);
+			if(logi.contentEquals("在这输入")) {
+				System.exit(1);
+			}
 			JOptionPane.showMessageDialog(null, "注册成功","提示",2);
 	   }
 	   if(distinguish==3){
@@ -131,6 +137,7 @@ public class Window implements MouseListener {
 			System.exit(1);
 			}
 	   }
+	   
 	   
 	}
  

@@ -9,7 +9,7 @@ public class connect {
 	private Connection conn=null;
 	private Statement stmt=null;
 	public void MyDBConnection(){
-		DBDriver="com.mysql.jdbc.Driver";
+		DBDriver="com.mysql.cj.jdbc.Driver";
 		DBURL="jdbc:mysql://localhost:3306/info";
 		DBUser="root";//用户名
 		DBPass="1234";//数据库密码

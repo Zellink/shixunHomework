@@ -94,6 +94,7 @@ public class FindGroup implements ActionListener {
 	
 	 public void actionPerformed(ActionEvent e) {  
 		   if(e.getSource() == createButton) {
+			   listModel.removeAllElements();
 			   String name = nameText.getText( );
 			   ArrayList<group> grp = opr.findGroupName( name);
 			   for(int i=0;i<grp.size( );i++) {
@@ -104,7 +105,9 @@ public class FindGroup implements ActionListener {
 				   String groupname = grp.get( i).groupname;
 					String portvlue= grp.get(i).port+"";
 					String s=String.format("群名:%-30s  账号：%-30s", groupname,portvlue);
+					String que = "   群描述:"+grp.get(i ).question;
 					listModel.addElement( s );
+					listModel.addElement( que);
 				}
 				
 				JList<String> list = new JList<String>(listModel);

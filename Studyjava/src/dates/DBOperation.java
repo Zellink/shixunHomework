@@ -123,12 +123,19 @@ public class DBOperation{
 	}
 	public boolean deleteGroup(int port) {
 		try {
+			/*
 			pstmt = conn.prepareStatement( "delete from groupChat where port = ?");
-			if(this.findGroup( port)) {
+			if(!this.findGroup( port)) {
 				System.out.println("无端口号");
 			}
+			System.out.println(port);
+			String s = port+"";
 			pstmt.setInt( 1, port);
-			pstmt.execute( );
+			pstmt.execute( );*/
+			String  sql = "delete from groupChat where port ="+port;
+			//System.out.println( sql);
+			stmt = conn.createStatement( );
+			stmt.executeUpdate( sql);
 			return true;
 		}
 		catch(Exception e) {
@@ -159,6 +166,21 @@ public class DBOperation{
 		}
 		return gro;
 	}
+	public String findGroupNameByPort(int port) {
+		try {
+			pstmt = conn.prepareStatement( "select groupname from groupChat where port = ?");
+			pstmt.setInt(1,port);
+			ResultSet rs = pstmt.executeQuery( );
+			if(rs.next( )) {
+				return rs.getString("groupname");
+			}
+			return null;
+		}
+		catch(Exception e) {
+			e.printStackTrace( );
+		}
+		return null;
+	}
 	public void insertData(String name,String password,int scores){
 		try{
 			String newType1=new String(name.getBytes(),"GBK");//字节转码
@@ -172,7 +194,7 @@ public class DBOperation{
 	}
 	public void deleteData(int scores){
 		String sql="DELETE FROM player WHERE scores="+scores+"";
-		System.out.print(sql);
+		//System.out.print(sql);
 		try{
 			stmt.executeUpdate(sql);
 			//System.out.println("一条记录被删除");
@@ -251,7 +273,8 @@ public class DBOperation{
 		System.out.println(myopr.findGroup( 2222));
 		myopr.deleteGroup( 2222);
 		System.out.println(myopr.findGroup( 2222));
-		myopr.createGroupChat(2222,"1234","aaa","bbb","1+1=?");
+		//myopr.createGroupChat(2222,"1234","aaa","bbb","1+1=?");
+		myopr.deleteGroup(6302);
 		System.out.println(myopr.findGroup( 2222));
 		ArrayList<group> gro = myopr.loadGroup( );
 		gro = myopr.findGroupName("a");

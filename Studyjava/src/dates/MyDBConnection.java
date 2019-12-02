@@ -14,7 +14,7 @@ public class MyDBConnection{//连接类
 	private Connection conn=null;
 	private Statement stmt=null;
 	public MyDBConnection(){
-		DBDriver="com.mysql.jdbc.Driver";
+		DBDriver="com.mysql.cj.jdbc.Driver";
 		DBURL="jdbc:mysql://localhost:3306/info";
 		 // DBURL = "jdbc:mysql://localhost:3306/info?useSSL=false&serverTimezone=UTC";
 		DBURL="jdbc:mysql://localhost:3306/info?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai";

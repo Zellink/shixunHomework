@@ -32,6 +32,7 @@ import javax.swing.border.TitledBorder;
 public class Client{
  
 	private JFrame frame;
+	private JFrame fafaframe;
 	private JList userList;
 	private JTextArea textArea;
 	private JTextField textField;
@@ -49,6 +50,8 @@ public class Client{
  
 	private DefaultListModel listModel;
 	private boolean isConnected = false;
+	private int port;
+	private String username;
  
 	private Socket socket;
 	private PrintWriter writer;
@@ -58,7 +61,7 @@ public class Client{
  
 	// 主方法,程序入口
 	public static void main(String[] args) {
-		new Client();
+//		new Client();
 	}
  
 	// 执行发送
@@ -79,28 +82,31 @@ public class Client{
 	}
  
 	// 构造方法
-	public Client() {
+	public Client(int kport, JFrame j, String username, String groupname) {
+		this.username = username;
+		this.fafaframe = j;
+		this.port = kport;
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		textArea.setForeground(Color.blue);
 		textField = new JTextField();
-		txt_port = new JTextField("6666");
+//		txt_port = new JTextField("6666");
 		txt_hostIp = new JTextField("127.0.0.1");
 		txt_name = new JTextField("xiaoqiang");
-		btn_start = new JButton("连接");
-		btn_stop = new JButton("断开");
+		btn_start = new JButton("加入");
+		btn_stop = new JButton("退出");
 		btn_send = new JButton("发送");
 		listModel = new DefaultListModel();
 		userList = new JList(listModel);
  
 		northPanel = new JPanel();
 		northPanel.setLayout(new GridLayout(1, 7));
-		northPanel.add(new JLabel("端口"));
-		northPanel.add(txt_port);
-		northPanel.add(new JLabel("服务器IP"));
-		northPanel.add(txt_hostIp);
-		northPanel.add(new JLabel("姓名"));
-		northPanel.add(txt_name);
+		northPanel.add(new JLabel("群号："));
+		northPanel.add(new JLabel(String.valueOf(kport)));
+		northPanel.add(new JLabel("群名："));
+		northPanel.add(new JLabel(groupname));
+		northPanel.add(new JLabel("用户名："));
+		northPanel.add(new JLabel(username));
 		northPanel.add(btn_start);
 		northPanel.add(btn_stop);
 		northPanel.setBorder(new TitledBorder("连接信息"));
@@ -157,21 +163,21 @@ public class Client{
 				}
 				try {
 					try {
-						port = Integer.parseInt(txt_port.getText().trim());
+						port = kport;
 					} catch (NumberFormatException e2) {
 						throw new Exception("端口号不符合要求!端口为整数!");
 					}
 					String hostIp = txt_hostIp.getText().trim();
-					String name = txt_name.getText().trim();
+					String name = username;
 					if (name.equals("") || hostIp.equals("")) {
 						throw new Exception("姓名、服务器IP不能为空!");
 					}
 					boolean flag = connectServer(port, hostIp, name);
 					if (flag == false) {
-						throw new Exception("与服务器连接失败!");
+						throw new Exception("加入失败!");
 					}
 					frame.setTitle(name);
-					JOptionPane.showMessageDialog(frame, "成功连接!");
+					JOptionPane.showMessageDialog(frame, "成功加入!");
 				} catch (Exception exc) {
 					JOptionPane.showMessageDialog(frame, exc.getMessage(),
 							"错误", JOptionPane.ERROR_MESSAGE);
@@ -183,16 +189,16 @@ public class Client{
 		btn_stop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!isConnected) {
-					JOptionPane.showMessageDialog(frame, "已处于断开状态，不要重复断开!",
+					JOptionPane.showMessageDialog(frame, "已处于退出状态，不要重复退出!",
 							"错误", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				try {
 					boolean flag = closeConnection();// 断开连接
 					if (flag == false) {
-						throw new Exception("断开连接发生异常！");
+						throw new Exception("退出发生异常！");
 					}
-					JOptionPane.showMessageDialog(frame, "成功断开!");
+					JOptionPane.showMessageDialog(frame, "成功退出!");
 				} catch (Exception exc) {
 					JOptionPane.showMessageDialog(frame, exc.getMessage(),
 							"错误", JOptionPane.ERROR_MESSAGE);
@@ -206,7 +212,7 @@ public class Client{
 				if (isConnected) {
 					closeConnection();// 关闭连接
 				}
-				System.exit(0);// 退出程序
+				fafaframe.setEnabled(true);
 			}
 		});
 	}
@@ -233,8 +239,8 @@ public class Client{
 			isConnected = true;// 已经连接上了
 			return true;
 		} catch (Exception e) {
-			textArea.append("与端口号为：" + port + "    IP地址为：" + hostIp
-					+ "   的服务器连接失败!" + "\r\n");
+			textArea.append("与群号为：" + port + "    IP地址为：" + hostIp
+					+ "   的聊天室连接失败!" + "\r\n");
 			isConnected = false;// 未连接上
 			return false;
 		}
@@ -315,7 +321,7 @@ public class Client{
 					String command = stringTokenizer.nextToken();// 命令
 					if (command.equals("CLOSE"))// 服务器已关闭命令
 					{
-						textArea.append("服务器已关闭!\r\n");
+						textArea.append("聊天室已关闭!\r\n");
 						closeCon();// 被动的关闭连接
 						return;// 结束线程
 					} else if (command.equals("ADD")) {// 有用户上线更新在线列表

@@ -27,11 +27,15 @@ public class ChooseRoomPanel {
 	private JPanel northPanel;
 	private MyDBConnection myDB=new MyDBConnection();
 	private DBOperation opr = new DBOperation(myDB);
+	private String player;
+	/*
 	public static void main(String[] args) {
-		new ChooseRoomPanel();
-	}
+		new ChooseRoomPanel("mark");
+	}*/
 	
-	public ChooseRoomPanel() {
+	public ChooseRoomPanel(String player) {
+		this.player = player;
+		//System.out.println(this.player);
 		jframe = new JFrame();
 		jframe.setTitle("聊天室选择");
 		jframe.setSize(512, 396);
@@ -46,7 +50,7 @@ public class ChooseRoomPanel {
 		joinButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jframe.setEnabled(false);
-				new JoinGroup(jframe);
+				new JoinGroup(jframe, player);
 			}
 		});
 		
@@ -82,7 +86,7 @@ public class ChooseRoomPanel {
 		createButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jframe.setEnabled(false);
-				new CreateRoomPanel(jframe);
+				new CreateRoomPanel(jframe, player);
 			}
 		});
 		 
