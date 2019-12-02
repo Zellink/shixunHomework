@@ -104,6 +104,23 @@ public class DBOperation{
 		}
 		return false;
 	}
+	
+	public  String getPassword(int port) {
+		try {
+			pstmt = conn.prepareStatement( "select * from groupChat where port = ?");
+			pstmt.setInt(1,port);
+			ResultSet rs = pstmt.executeQuery( );
+			if(rs.next()) {
+				String psw = rs.getString( "password");
+				return psw;
+			}
+			return null;
+		}
+		catch(Exception e) {
+			e.printStackTrace( );
+		}
+		return null;
+	}
 	public boolean deleteGroup(int port) {
 		try {
 			pstmt = conn.prepareStatement( "delete from groupChat where port = ?");
@@ -124,7 +141,7 @@ public class DBOperation{
 		try {
 			pstmt = conn.prepareStatement("select * from groupChat where groupname like ?");
 			name = '%'+name +'%';
-			System.out.println(name);
+			//System.out.println(name);
 			pstmt.setString( 1, name);
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next( )) {

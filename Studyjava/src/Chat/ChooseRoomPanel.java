@@ -1,6 +1,8 @@
 package Chat;
 
 import javax.swing.JFrame;
+import dates.DBOperation;
+import dates.MyDBConnection;
 import javax.swing.JPanel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -16,13 +18,15 @@ import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.*;
 
 public class ChooseRoomPanel {
 	
 	private JFrame jframe;
 	private JPanel southPanel;
 	private JPanel northPanel;
-
+	private MyDBConnection myDB=new MyDBConnection();
+	private DBOperation opr = new DBOperation(myDB);
 	public static void main(String[] args) {
 		new ChooseRoomPanel();
 	}
@@ -39,6 +43,12 @@ public class ChooseRoomPanel {
 		JButton joinButton = new JButton("加入聊天室");
 		southPanel.add(joinButton, BorderLayout.NORTH);
 		jframe.getContentPane().setLayout(new BorderLayout(0, 0));
+		joinButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jframe.setEnabled(false);
+				new JoinGroup(jframe);
+			}
+		});
 		
 		JButton refreshBotton = new JButton("刷新");
 		northPanel.add(refreshBotton);
@@ -57,6 +67,12 @@ public class ChooseRoomPanel {
 		
 		JButton findButton = new JButton("查询聊天室");
 		southPanel.add(findButton, "South");
+		findButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jframe.setEnabled(false);
+				new FindGroup(jframe);
+			}
+		});
 		
 		JButton createButton = new JButton("创建聊天室");
 		createButton.addActionListener(new ActionListener() {
@@ -69,13 +85,23 @@ public class ChooseRoomPanel {
 		jframe.getContentPane().add(southPanel, BorderLayout.SOUTH);
 		jframe.getContentPane().add(northPanel, BorderLayout.NORTH);
 		
+		
 		JScrollPane centerPanel = new JScrollPane();
 		centerPanel.setBorder(new TitledBorder("现有聊天室"));
 		jframe.getContentPane().add(centerPanel);
 		
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		listModel.addElement("聊天室1");
-		listModel.addElement("聊天室2");
+		
+		//listModel.addElement("聊天室1");
+		//listModel.addElement("聊天室2");
+		ArrayList<group> grp = opr.loadGroup( );
+		for(int i=0;i<grp.size();i++) {
+			listModel.addElement( grp.get(i ).groupname  );
+			String portvlue= grp.get(i).port+"";
+			listModel.addElement( portvlue );
+			
+		}
+		
 		JList<String> list = new JList<String>(listModel);
 		list.setBorder(null);
 		centerPanel.setViewportView(list);

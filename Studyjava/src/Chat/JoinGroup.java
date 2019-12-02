@@ -1,5 +1,4 @@
 package Chat;
-
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 
@@ -16,10 +15,11 @@ import dates.MyDBConnection;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
-public class CreateRoomPanel  implements ActionListener {
-	
+
+
+public class JoinGroup implements ActionListener {
 	private JFrame jframe;
-	private JTextField nameText;
+	private JTextField portText;
 	private JTextField pswText;
 	private JTextArea textArea ;
 	//private JTextField textArea;
@@ -27,11 +27,11 @@ public class CreateRoomPanel  implements ActionListener {
 	private MyDBConnection myDB=new MyDBConnection();
 	//private Connection conn= new Connection(myDB);
 	private DBOperation opr = new DBOperation(myDB);
-	public CreateRoomPanel(JFrame j) {
+	public JoinGroup(JFrame j) {
 		jframe = new JFrame();
 		jframe.setAlwaysOnTop(true);
 		jframe.setResizable(false);
-		jframe.setTitle("创建聊天室");
+		jframe.setTitle("加入群聊");
 		jframe.getContentPane().setLayout(new BorderLayout(0, 0));
 		jframe.setSize(512, 396);
 		jframe.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -40,7 +40,7 @@ public class CreateRoomPanel  implements ActionListener {
 		jframe.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		JLabel nameLabel = new JLabel("聊天室名字：");
+		JLabel nameLabel = new JLabel("群账号：");
 		nameLabel.setBounds(67, 10, 79, 40);
 		panel.add(nameLabel);
 		
@@ -48,30 +48,22 @@ public class CreateRoomPanel  implements ActionListener {
 		passwordLabel.setBounds( 67,60,79,40);
 		panel.add( passwordLabel);
 		
-		JLabel introduceLabel = new JLabel("聊天室介绍：");
-		introduceLabel.setBounds(67, 110, 79, 40);
-		panel.add(introduceLabel);
 		
 		
-		
-		nameText = new JTextField();
-		nameText.setText("在此处输入聊天室的名字");
-		nameText.setBounds(151, 10, 218, 40);
-		panel.add(nameText);
-		nameText.setColumns(10);
+		portText = new JTextField();
+		portText.setText("在此处输入聊天室的账号");
+		portText.setBounds(151, 10, 218, 40);
+		panel.add(portText);
+		//portText.setColumns(10);
 		
 		pswText = new JTextField();
-		pswText.setText("请输入密码");
+		pswText.setText("请输入密码    //提示：群聊无密码，则为初始密码  1234");
 		pswText.setBounds(151,60,218,40);
 		panel.add(pswText);
 		
-		 textArea = new JTextArea();
-		textArea.setText("在此处输入聊天室的介绍  或者  问题");
-		textArea.setLineWrap(true);
-		textArea.setBounds(151, 110, 218, 80);
-		panel.add(textArea);
 		
-		 createButton = new JButton("创建聊天室");
+		
+		 createButton = new JButton("加入群聊");
 		createButton.setBounds(151, 289, 218, 41);
 		createButton.addActionListener(this );
 		panel.add(createButton);
@@ -89,24 +81,23 @@ public class CreateRoomPanel  implements ActionListener {
 	
 	 public void actionPerformed(ActionEvent e) {  
 		   if(e.getSource() == createButton) {
-			  // nameText.copy( );
-			   //nameText.paste( );
-			   String groupname = nameText.getText( );
-			   System.out.println(groupname );
+			   String  port = portText.getText( );
+			   System.out.println(port );
 			   String password = pswText.getText( );
 			   System.out.println( password );
-			   String question = textArea.getText( );
-			   System.out.println( groupname+" "+password+" "+question);
-			   int port = (int)(Math.random( )*1000) +6000;
-			   String groupowner = "null";
-			   if(password.contentEquals("请输入密码")) {
-				   password = "1234";
+			   //String question = textArea.getText( );
+			   System.out.println( port+" "+password+" ");
+			   int portvalue = Integer.parseInt(port);
+			   String passwordfromDB = opr.getPassword(portvalue);
+			   System.out.println( passwordfromDB+" "+portvalue);
+			   if(passwordfromDB.contentEquals(password)) {
+				   System.out.println("启动客户端");
+				   //启动客户端
 			   }
-			   while(opr.findGroup(port)) {
-				   port = (int)(Math.random( )*1000) +6000;
+			   else {
+				   System.out.println( "密码错误");
+				   //提示
 			   }
-			   opr.createGroupChat(port, password, groupowner, groupname, question);
-			   System.out.println(port+" "+opr.findGroup( port));
 		   }
 	   }  
 }
